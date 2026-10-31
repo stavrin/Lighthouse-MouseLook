@@ -580,3 +580,37 @@ void thread5_getWatchdogState(Thread5WatchdogState *out) {
     out->syncQueueCount = sThread5SyncMesgQueue.validCount;
     out->syncQueueCap = sThread5SyncMesgQueue.msgCount;
 }
+
+#include <stddef.h>
+
+// [port] Save states: this file's live OS objects (threads, queues, timers, in-flight tasks).
+// A loaded state leaves them as they are (port/SaveStates/SaveStates.cpp).
+void port_saveStateExclusions_graphicsThread(void (*exclude)(void *ptr, size_t size)) {
+    exclude((void *)&sAudTask, sizeof(sAudTask));
+    exclude((void *)&sGfxTask, sizeof(sGfxTask));
+    exclude((void *)&sYieldData, sizeof(sYieldData));
+    exclude((void *)&sThread5MesgQueue, sizeof(sThread5MesgQueue));
+    exclude((void *)&sThread5MesgBuffer, sizeof(sThread5MesgBuffer));
+    exclude((void *)&sThread5SyncMesgQueue, sizeof(sThread5SyncMesgQueue));
+    exclude((void *)&sThread5SyncMesgBufer, sizeof(sThread5SyncMesgBufer));
+    exclude((void *)&sActiveAudioTaskDataPtr, sizeof(sActiveAudioTaskDataPtr));
+    exclude((void *)&sSyncCounter, sizeof(sSyncCounter));
+    exclude((void *)&sTask7Handled, sizeof(sTask7Handled));
+    exclude((void *)&sUnkFlag2_Saved, sizeof(sUnkFlag2_Saved));
+    exclude((void *)&sUnkFlag2, sizeof(sUnkFlag2));
+    exclude((void *)&sUnkFlag1, sizeof(sUnkFlag1));
+    exclude((void *)&sUnkFlag1_Saved, sizeof(sUnkFlag1_Saved));
+    exclude((void *)&sGfxTaskYielded, sizeof(sGfxTaskYielded));
+    exclude((void *)&sThread5Stack, sizeof(sThread5Stack));
+    exclude((void *)&sThread5, sizeof(sThread5));
+    exclude((void *)&sGfxTaskDataList, sizeof(sGfxTaskDataList));
+    exclude((void *)&sSelectedGfxTaskDataID, sizeof(sSelectedGfxTaskDataID));
+    exclude((void *)&sActiveGfxTaskDataID, sizeof(sActiveGfxTaskDataID));
+    exclude((void *)&sAudioTaskDataList, sizeof(sAudioTaskDataList));
+    exclude((void *)&sSelectedAudioTaskDataID, sizeof(sSelectedAudioTaskDataID));
+    exclude((void *)&sActiveAudioTaskDataID, sizeof(sActiveAudioTaskDataID));
+    exclude((void *)&sCurrentFramebuffer, sizeof(sCurrentFramebuffer));
+    exclude((void *)&sAudioTimer, sizeof(sAudioTimer));
+    exclude((void *)&sControllerTimer, sizeof(sControllerTimer));
+    exclude((void *)&sEnableControllerTimer, sizeof(sEnableControllerTimer));
+}

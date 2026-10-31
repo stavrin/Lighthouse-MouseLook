@@ -56,3 +56,16 @@ void defragthread_entry(void *arg) {
         osRecvMesg(&sDefragThreadPauseSyncQueue, NULL, OS_MESG_BLOCK);
     }while(1);
 }
+
+#include <stddef.h>
+
+// [port] Save states: this file's live OS objects (threads, queues, timers, in-flight tasks).
+// A loaded state leaves them as they are (port/SaveStates/SaveStates.cpp).
+void port_saveStateExclusions_defragmanager(void (*exclude)(void *ptr, size_t size)) {
+    exclude((void *)&sDefragThreadResumeSyncQueue, sizeof(sDefragThreadResumeSyncQueue));
+    exclude((void *)&sDefragThreadResumeSyncMesg, sizeof(sDefragThreadResumeSyncMesg));
+    exclude((void *)&sDefragThreadPauseSyncQueue, sizeof(sDefragThreadPauseSyncQueue));
+    exclude((void *)&sDefragThreadPauseSyncMesg, sizeof(sDefragThreadPauseSyncMesg));
+    exclude((void *)&sDefragThread, sizeof(sDefragThread));
+    exclude((void *)&sDefragThreadStack, sizeof(sDefragThreadStack));
+}

@@ -20,3 +20,12 @@ void initThread_entry(void *arg) {
     osStartThread(mainThread_get());
     while (1);
 }
+
+#include <stddef.h>
+
+// [port] Save states: this file's live OS objects (threads, queues, timers, in-flight tasks).
+// A loaded state leaves them as they are (port/SaveStates/SaveStates.cpp).
+void port_saveStateExclusions_initthread(void (*exclude)(void *ptr, size_t size)) {
+    exclude((void *)&sInitThread, sizeof(sInitThread));
+    exclude((void *)&sInitThreadStack, sizeof(sInitThreadStack));
+}
