@@ -217,6 +217,13 @@ void LighthouseMenu::AddMenuEnhancements() {
         .RaceDisable(false)
         .Options(CheckboxOptions().Tooltip("Inverts the vertical free look direction."));
 
+    AddWidget(path, "Free Look Everywhere", WIDGET_CVAR_CHECKBOX)
+        .CVar(CVAR_ENHANCEMENT("Camera.FreeLook.Everywhere"))
+        .RaceDisable(false)
+        .Options(CheckboxOptions().DefaultValue(true).Tooltip(
+            "Free look also works underwater and in rooms with a fixed camera. The game's camera stays until "
+            "you move the stick or mouse; a C-button camera control gives it back."));
+
     AddWidget(path, "Free Look Mouse", WIDGET_CVAR_CHECKBOX)
         .CVar(CVAR_ENHANCEMENT("Camera.FreeLook.Mouse"))
         .RaceDisable(false)

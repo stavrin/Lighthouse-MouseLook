@@ -25,6 +25,7 @@ extern "C" {
 
 int port_freeLook_isEnabled(void);
 int port_freeLook_handle(void);
+int port_freeLook_takesOverFixedCamera(void);
 void port_freeLookCamera_update(void);
 
 #ifdef __cplusplus

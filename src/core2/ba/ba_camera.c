@@ -71,6 +71,11 @@ int func_80290D48(void){
 
 
     camera_node_index = func_802903CC();
+    // [port] Free Look Everywhere: free look keeps (or takes) the camera in fixed-camera areas.
+    if(port_freeLook_takesOverFixedCamera()){
+        func_80290BC0(0);
+        return false;
+    }
     if(camera_node_index == -1 || !ncCameraNodeList_nodeIsValid(camera_node_index)){
         func_80290BC0(0);
         return false;
@@ -108,6 +113,10 @@ int func_80290D48(void){
 
 int func_80290E8C(void){
     if(player_getWaterState() != BSWATERGROUP_2_UNDERWATER)
+        return false;
+
+    // [port] Free Look Everywhere: free look keeps (or takes) the camera underwater.
+    if(port_freeLook_takesOverFixedCamera())
         return false;
 
     ncDynamicCamera_setState(3);

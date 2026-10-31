@@ -24,6 +24,9 @@ using namespace PortCamera;
 #define CVAR_FREELOOK_MOUSE_SENS CVAR_ENHANCEMENT("Camera.FreeLook.MouseSensitivity")
 #define CVAR_FREELOOK_MOUSE_INVERT_X CVAR_ENHANCEMENT("Camera.FreeLook.MouseInvertX")
 #define CVAR_FREELOOK_MOUSE_INVERT_Y CVAR_ENHANCEMENT("Camera.FreeLook.MouseInvertY")
+#define CVAR_FREELOOK_EVERYWHERE CVAR_ENHANCEMENT("Camera.FreeLook.Everywhere")
+
+extern "C" int globalTimer_getTime(void);
 
 constexpr float kDeadzone = 0.15f;
 constexpr float kEnterThreshold = 0.30f;
@@ -53,6 +56,8 @@ bool sActive = false;
 float sMouseYaw = 0.0f;   // degrees the mouse has turned since the last camera update
 float sMousePitch = 0.0f;
 bool sMouseCaptureApplied = false;
+int sPolledFrame = -1;          // the game frame the mouse was last read in
+bool sMouseMovedThisFrame = false;
 bool sAimValid = false;
 float sPitch = 0.0f;
 float sAimY = 0.0f;
@@ -137,6 +142,29 @@ bool PollMouse() {
     return true;
 }
 
+// Reads the mouse once per game frame (both the fixed-camera check and the camera handler ask).
+bool MouseMovedThisFrame() {
+    const int frame = globalTimer_getTime();
+    if (frame != sPolledFrame) {
+        sPolledFrame = frame;
+        sMouseMovedThisFrame = PollMouse();
+    }
+    return sMouseMovedThisFrame;
+}
+
+bool Everywhere() {
+    return CVarGetInteger(CVAR_FREELOOK_EVERYWHERE, 1) != 0;
+}
+
+// Camera states free look can take over from: the follow cameras, and with Free Look Everywhere,
+// the underwater camera (3) and the fixed cameras of camera-node areas (8: pivot, 0x11: zoom).
+bool CanEnterFrom(int state) {
+    if (state == 0xB || state == 0x1 || state == 0xA) {
+        return true;
+    }
+    return Everywhere() && (state == 0x3 || state == 0x8 || state == 0x11);
+}
+
 void EnterOrbit() {
     func_802C0150(2);
     func_802BE230(SpringGain(), SpringGain() * kDampRatio);
@@ -165,7 +193,7 @@ extern "C" int port_freeLook_isEnabled(void) {
 
 extern "C" int port_freeLook_handle(void) {
     SyncMouseCapture();
-    const bool mouseMoved = PollMouse();
+    const bool mouseMoved = MouseMovedThisFrame();
 
     if (!port_freeLook_isEnabled()) {
         if (sActive) {
@@ -196,7 +224,7 @@ extern "C" int port_freeLook_handle(void) {
         return 0;
     }
 
-    if (state != 0xB && state != 0x1 && state != 0xA) {
+    if (!CanEnterFrom(state)) {
         ClearMouse();
         return 0;
     }
@@ -210,6 +238,23 @@ extern "C" int port_freeLook_handle(void) {
 
     ClearMouse();
     return 0;
+}
+
+// Free Look Everywhere: asked by the underwater camera and the camera-node (fixed camera) areas
+// before they take the camera. True while free look holds the camera, or when the stick or mouse
+// asks for it this frame, so they leave it to free look. A C-button camera control hands it back.
+extern "C" int port_freeLook_takesOverFixedCamera(void) {
+    if (!port_freeLook_isEnabled() || !Everywhere()) {
+        return 0;
+    }
+    if (sActive && ncDynamicCamera_getState() == FREELOOK_CAM_STATE) {
+        return ManualCameraControl() ? 0 : 1;
+    }
+    if (ManualCameraControl()) {
+        return 0;
+    }
+    float stick[2];
+    return (ReadStick(stick) >= kEnterThreshold || MouseMovedThisFrame()) ? 1 : 0;
 }
 
 extern "C" void port_freeLookCamera_update(void) {
