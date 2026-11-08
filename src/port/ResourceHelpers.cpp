@@ -11,7 +11,6 @@
 #include "ship/Context.h"
 #include "Resource/Importers/MusicFactory.h"
 #include "UI/cvar_prefixes.h"
-#include "SaveStates/SaveStates.h"
 #include <spdlog/spdlog.h>
 #include <algorithm>
 #include <cstring>
@@ -19,7 +18,6 @@
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
-#include <vector>
 
 #if defined(_DEBUG) && defined(_MSC_VER)
 #include <crtdbg.h>
@@ -301,11 +299,6 @@ extern "C" char* ResourceMgr_ReloadByAssetId(uint32_t assetId) {
     if (auto it = sResourceRefCache.find(assetId); it != sResourceRefCache.end()) {
         oldRef = std::move(it->second);
         sResourceRefCache.erase(it);
-    }
-    // [port] Save states can hold pointers into the old copy: keep it alive while any state exists.
-    static std::vector<std::shared_ptr<Ship::IResource>> sKeptForSaveStates;
-    if (oldRef != nullptr && port_saveStates_any()) {
-        sKeptForSaveStates.push_back(oldRef);
     }
 
     std::string mappedPath = ResourceHelpers_GetActiveAssetPath(assetId);

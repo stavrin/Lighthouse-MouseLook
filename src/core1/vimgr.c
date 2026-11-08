@@ -296,19 +296,3 @@ OSMesgQueue *viMgr_getTickRetraceQueue(void) {
 void viMgr_func_8024C4F8(s32 arg0) {
     D_802808D8 = arg0;
 }
-
-#include <stddef.h>
-
-// [port] Save states: this file's live OS objects (threads, queues, timers, in-flight tasks).
-// A loaded state leaves them as they are (port/SaveStates/SaveStates.cpp).
-void port_saveStateExclusions_vimgr(void (*exclude)(void *ptr, size_t size)) {
-    exclude((void *)&sActiveFramebuffer, sizeof(sActiveFramebuffer));
-    exclude((void *)&sMesgQueue1, sizeof(sMesgQueue1));
-    exclude((void *)&sMesgBuffer1, sizeof(sMesgBuffer1));
-    exclude((void *)&sMesgQueue2, sizeof(sMesgQueue2));
-    exclude((void *)&sMesgBuffer2, sizeof(sMesgBuffer2));
-    exclude((void *)&sMesgQueue3, sizeof(sMesgQueue3));
-    exclude((void *)&sMesgBuffer3, sizeof(sMesgBuffer3));
-    exclude((void *)&sViManagerThread, sizeof(sViManagerThread));
-    exclude((void *)&sViManagerThreadStack, sizeof(sViManagerThreadStack));
-}

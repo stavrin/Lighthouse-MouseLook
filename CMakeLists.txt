@@ -257,17 +257,6 @@ else()
     add_executable(${PROJECT_NAME} ${ALL_FILES})
 endif()
 
-# Save states (src/port/SaveStates): every game source file (src/ except src/port, and libultra's
-# audio library) gets SaveStateSections.h forced in, which puts its variables in their own sections
-# so a save state can copy all of the game's variables and none of the port's.
-if(MSVC)
-    set(SAVESTATE_GAME_SOURCES ${ALL_FILES})
-    list(FILTER SAVESTATE_GAME_SOURCES INCLUDE REGEX "^(src/.*|lib/ultralib/audio/.*)\\.c$")
-    list(FILTER SAVESTATE_GAME_SOURCES EXCLUDE REGEX "^src/port/")
-    set_property(SOURCE ${SAVESTATE_GAME_SOURCES} APPEND PROPERTY COMPILE_OPTIONS
-        "/FI${CMAKE_CURRENT_SOURCE_DIR}/src/port/SaveStates/SaveStateSections.h")
-endif()
-
 ################################################################################
 # MSVC runtime library
 ################################################################################

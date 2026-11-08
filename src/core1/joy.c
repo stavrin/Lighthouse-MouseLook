@@ -552,19 +552,3 @@ void func_8024F4AC(void)
 //  osSendMesg(&D_802816E8, NULL, OS_MESG_NOBLOCK);
     osSendMesgPtr(&D_802816E8, NULL, OS_MESG_NOBLOCK);
 }
-
-#include <stddef.h>
-
-// [port] Save states: this file's live OS objects (threads, queues, timers, in-flight tasks).
-// A loaded state leaves them as they are (port/SaveStates/SaveStates.cpp).
-void port_saveStateExclusions_joy(void (*exclude)(void *ptr, size_t size)) {
-    exclude((void *)&sSiEventQueueBuf, sizeof(sSiEventQueueBuf));
-    exclude((void *)&sSiReplyQueueBuf, sizeof(sSiReplyQueueBuf));
-    exclude((void *)&sSiEventQueue, sizeof(sSiEventQueue));
-    exclude((void *)&sSiReplyQueue, sizeof(sSiReplyQueue));
-    exclude((void *)&sJoyBusy, sizeof(sJoyBusy));
-    exclude((void *)&sJoyThread, sizeof(sJoyThread));
-    exclude((void *)&sJoyThreadStack, sizeof(sJoyThreadStack));
-    exclude((void *)&D_802816E8, sizeof(D_802816E8));
-    exclude((void *)&D_80281700, sizeof(D_80281700));
-}

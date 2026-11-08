@@ -193,14 +193,3 @@ void baMotor_forceStop(void) {
         controller_func_8024F35C(0);
     }
 }
-
-#include <stddef.h>
-
-// [port] Save states: this file's live OS objects (threads, queues, timers, in-flight tasks).
-// A loaded state leaves them as they are (port/SaveStates/SaveStates.cpp).
-void port_saveStateExclusions_bamotor(void (*exclude)(void *ptr, size_t size)) {
-    exclude((void *)&sbaMotorThreadMesgQ, sizeof(sbaMotorThreadMesgQ));
-    exclude((void *)&sbaMotorThreadMesgBuf, sizeof(sbaMotorThreadMesgBuf));
-    exclude((void *)&sbaMotorThread, sizeof(sbaMotorThread));
-    exclude((void *)&sbaMotorThreadStrack, sizeof(sbaMotorThreadStrack));
-}

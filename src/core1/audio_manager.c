@@ -638,14 +638,3 @@ OSIoMesg *audioManager_getExtraDMAMesg(void) {
 OSMesgQueue *audioManager_getFrameMesgQueue(void) {
     return &audioManager.audioFrameMsgQ;
 }
-
-#include <stddef.h>
-
-// [port] Save states: this file's live OS objects (threads, queues, timers, in-flight tasks).
-// A loaded state leaves them as they are (port/SaveStates/SaveStates.cpp).
-void port_saveStateExclusions_audioManager(void (*exclude)(void *ptr, size_t size)) {
-    exclude((void *)&audioManager, sizeof(audioManager));
-    exclude((void *)&audioDMANotifyMsgQ, sizeof(audioDMANotifyMsgQ));
-    exclude((void *)&audioDMANotifyMsgBuf, sizeof(audioDMANotifyMsgBuf));
-    exclude((void *)&sExtraDMAMesg, sizeof(sExtraDMAMesg));
-}

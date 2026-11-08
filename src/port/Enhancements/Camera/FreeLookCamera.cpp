@@ -288,10 +288,12 @@ extern "C" void port_freeLookCamera_update(void) {
     func_802C0394(target);
     func_802BE190(target);
 
+    // Keep the camera out of walls, but don't use the follow camera's line-of-sight rescue
+    // (func_802BC84C): when the player has been hidden from the camera for a few frames it jumps the
+    // camera to a spot beside them, and free look pulls it straight back to where the player put it,
+    // over and over, so the view (and the player in it) kept jumping and snapping back.
     if (func_802BE60C()) {
-        if (!func_802BC84C(1)) {
-            func_802C03BC();
-        }
+        func_802C03BC();
         func_802C04B0();
     }
 

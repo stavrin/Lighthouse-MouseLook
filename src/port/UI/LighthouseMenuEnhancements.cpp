@@ -117,6 +117,12 @@ void LighthouseMenu::AddMenuEnhancements() {
         .RaceDisable(false)
         .Options(CheckboxOptions().Tooltip("Skips Banjo's dance when a note door opens, opening it immediately."));
 
+    AddWidget(path, "Return Skips Dialogue", WIDGET_CVAR_CHECKBOX)
+        .CVar(CVAR_ENHANCEMENT("Cutscenes.SkipDialogueWithReturn"))
+        .RaceDisable(false)
+        .Options(CheckboxOptions().Tooltip("Press Return (Enter) to skip the rest of the dialogue on screen, up to the "
+                                           "next question or the end."));
+
     // Enhancements -> Graphics
     path = { "Enhancements", "Graphics", SECTION_COLUMN_1 };
     AddSidebarEntry("Enhancements", path.sidebarName, 2);
@@ -283,17 +289,6 @@ void LighthouseMenu::AddMenuEnhancements() {
             }
         })
         .Options(CheckboxOptions().Tooltip("Mirrors the world horizontally. Inverts left/right controls to match."));
-
-    // Save States
-    AddWidget(path, "Save States", WIDGET_SEPARATOR_TEXT);
-
-    AddWidget(path, "Save States (Experimental)", WIDGET_CVAR_CHECKBOX)
-        .CVar(CVAR_ENHANCEMENT("SaveStates.Enabled"))
-        .RaceDisable(true)
-        .Options(CheckboxOptions().Tooltip(
-            "Save the whole game at any moment and go back to it, like an emulator: F5 saves, F7 loads, "
-            "F6 picks the slot (5 slots). States are kept until you close the game. Experimental: if "
-            "something looks wrong after loading, load again or restart."));
 
     // Enhancements -> Fixes
     path = { "Enhancements", "Fixes", SECTION_COLUMN_1 };

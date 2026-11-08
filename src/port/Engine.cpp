@@ -38,7 +38,6 @@
 #include "port/Patches/Patches.h"
 #include "port/Save/SaveManager.h"
 #include "port/UI/cvar_prefixes.h"
-#include "port/SaveStates/SaveStates.h"
 #include "ResourceHelpers.h"
 #include "Localization/Language.h"
 #include "Resource/Importers/AnimFactory.h"
@@ -474,6 +473,8 @@ void GameEngine::ArchivesChanged() {
     port_spriteDisplayCache_clear();
 }
 
+extern "C" void port_dialogueSkipKey(void);
+
 void GameEngine::StartFrame() const {
     using Ship::KbScancode;
     const int32_t dwScancode = this->context->GetWindow()->GetLastScancode();
@@ -490,15 +491,9 @@ void GameEngine::StartFrame() const {
             // gNextGameState = GSTATE_BOOT;
             break;
         }
-        // Save states (port/SaveStates/SaveStates.cpp)
-        case KbScancode::LUS_KB_F5:
-            port_saveStates_key(PORT_SAVESTATE_KEY_SAVE);
-            break;
-        case KbScancode::LUS_KB_F6:
-            port_saveStates_key(PORT_SAVESTATE_KEY_NEXT_SLOT);
-            break;
-        case KbScancode::LUS_KB_F7:
-            port_saveStates_key(PORT_SAVESTATE_KEY_LOAD);
+        // Skip Dialogue (Enhancements/Cutscenes/CutsceneSkips.cpp)
+        case KbScancode::LUS_KB_ENTER:
+            port_dialogueSkipKey();
             break;
         default:
             break;

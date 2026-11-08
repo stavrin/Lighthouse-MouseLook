@@ -297,15 +297,3 @@ void graphicscache_swapAndGetStacks(Gfx **gfx, Mtx **mtx, Vtx **vtx) {
 }
 
 void dummy_func_80254464(void) {}
-
-#include <stddef.h>
-
-// [port] Save states: this file's live OS objects (threads, queues, timers, in-flight tasks).
-// A loaded state leaves them as they are (port/SaveStates/SaveStates.cpp).
-void port_saveStateExclusions_displayList(void (*exclude)(void *ptr, size_t size)) {
-    exclude((void *)&sStackSelector, sizeof(sStackSelector));
-    exclude((void *)&sUcodeTaskData, sizeof(sUcodeTaskData));
-    exclude((void *)&sCurrentUcodeTaskDataID, sizeof(sCurrentUcodeTaskDataID));
-    exclude((void *)&sTaskDataListLockMesgQueue, sizeof(sTaskDataListLockMesgQueue));
-    exclude((void *)&sTaskDataListLockMesg, sizeof(sTaskDataListLockMesg));
-}

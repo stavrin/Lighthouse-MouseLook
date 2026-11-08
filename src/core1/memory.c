@@ -5,7 +5,6 @@
 #include "version.h"
 #include <ultra64.h>
 #include <PR/region.h>
-#include "port/SaveStates/GameHeap.h"
 
 /*
  *  Every chunk of allocated memory is prefixed with a HeapHeader.
@@ -363,8 +362,7 @@ void func_80254C98(void){
 }
 
 void *bk_malloc(size_t size){
-    // [port] From the game heap arena, so save states can copy it (port/SaveStates/GameHeap.cpp).
-    return port_gameHeap_calloc(size);
+    return calloc(1, size);
 #if 0
     u32 capacity;
     EmptyHeapBlock *v1;
@@ -497,9 +495,8 @@ void _heap_sortEmptyBlock(EmptyHeapBlock * arg0){
 }
 
 void bk_free(void * ptr){
-    // Lighthouse [port] Use the game heap arena (port/SaveStates/GameHeap.cpp)
-    port_gameHeap_free(ptr);
-    return;
+    // Lighthouse [port] Use standard free function
+    return free(ptr);
 #if 0
     HeapHeader *sPtr; //stack_ptr
     
@@ -581,8 +578,8 @@ void *func_8025534C(void){
 }
 
 void *bk_realloc(void *ptr, size_t new_size){
-    // Lighthouse [port] Use the game heap arena (port/SaveStates/GameHeap.cpp)
-    return port_gameHeap_realloc(ptr, new_size);
+    // Lighthouse [port] Use standard realloc function
+    return realloc(ptr, new_size);
 #if 0
 
     

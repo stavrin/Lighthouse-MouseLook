@@ -6,7 +6,6 @@
 #include "port/ShipUtils.h" // gPortResetPending
 #include "version.h"
 #include "core2/gc/transition.h"
-#include "port/SaveStates/SaveStates.h"
 
 #define MAIN_THREAD_STACK_SIZE 0x1800
 
@@ -286,8 +285,6 @@ void mainLoop(void) {
         port_actorDespawn_beginDefer();
         CALL_EVENT(GameFrameUpdate);
         port_actorDespawn_endDefer();
-        // [port] Save states: save or load between frames (F5 / F7).
-        port_saveStates_process();
     }
 }
 
@@ -323,13 +320,4 @@ OSThread *mainThread_get(void) {
 
 void disableInput_set(void) {
     sDisableInput = TRUE;
-}
-
-#include <stddef.h>
-
-// [port] Save states: this file's live OS objects (threads, queues, timers, in-flight tasks).
-// A loaded state leaves them as they are (port/SaveStates/SaveStates.cpp).
-void port_saveStateExclusions_init(void (*exclude)(void *ptr, size_t size)) {
-    exclude((void *)&sMainThread, sizeof(sMainThread));
-    exclude((void *)&sMainThreadStack, sizeof(sMainThreadStack));
 }
